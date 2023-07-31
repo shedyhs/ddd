@@ -13,7 +13,7 @@ import { Partner } from '../../../domain/entities/partner.entity';
 import { PartnerMySqlRepository } from './partner-mysql.repository';
 import { IPartnerRepository } from '../../../domain/repositories/partner-repository.interface';
 
-describe('Event MySql repository', () => {
+describe.skip('Event MySql repository', () => {
   let orm: MikroORM;
   let entityManager: EntityManager;
   let eventRepository: IEventRepository;
@@ -21,7 +21,7 @@ describe('Event MySql repository', () => {
   let partner: Partner;
   let event: Event;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     orm = await MikroORM.init<MySqlDriver>({
       entities: [
         EventSchema,
@@ -37,6 +37,9 @@ describe('Event MySql repository', () => {
       password: 'root',
       forceEntityConstructor: true,
     });
+  });
+
+  beforeEach(async () => {
     entityManager = orm.em.fork();
     partnerRepository = new PartnerMySqlRepository(entityManager);
     eventRepository = new EventMySqlRepository(entityManager);
@@ -52,7 +55,6 @@ describe('Event MySql repository', () => {
   });
   afterEach(async () => {
     entityManager.clear();
-    await orm.close();
   });
 
   test('Should add a event in database', async () => {

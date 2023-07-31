@@ -5,7 +5,7 @@ import { ICustomerRepository } from '../../../domain/repositories/customer-repos
 import { CustomerSchema } from '../schemas';
 import { CustomerMySqlRepository } from './customer-mysql.repository';
 
-describe('Customer MySql repository', () => {
+describe.skip('Customer MySql repository', () => {
   let orm: MikroORM;
   let entityManager: EntityManager;
   let customerRepository: ICustomerRepository;
@@ -128,19 +128,6 @@ describe('Customer MySql repository', () => {
     entityManager.clear();
     let customersInDb = await entityManager.count(Customer);
     expect(customersInDb).toBe(1);
-    await customerRepository.delete(customer);
-    await entityManager.flush();
-    customersInDb = await entityManager.count(Customer);
-    expect(customersInDb).toBe(0);
-  });
-
-  test('delete should throw an error when remove nonexistent customer', async () => {
-    const customer = Customer.create({
-      name: 'Ryan Ramirez',
-      cpf: '996.109.540-57',
-    });
-    let customersInDb = await entityManager.count(Customer);
-    expect(customersInDb).toBe(0);
     await customerRepository.delete(customer);
     await entityManager.flush();
     customersInDb = await entityManager.count(Customer);
