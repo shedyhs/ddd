@@ -1,15 +1,15 @@
 import { Cascade, EntitySchema } from '@mikro-orm/core';
-import { Partner } from '../../../../src/@core/domain/entities/partner.entity';
-import { PartnerIdSchemaType } from './types/partner-id.schema-type';
-import { Event } from '../../../../src/@core/domain/entities/event.entity';
-import { EventIdSchemaType } from './types/event-id.schema-type';
-import { Customer } from '../../../../src/@core/domain/entities/customer.entity';
-import { CustomerIdSchemaType } from './types/customer-id.schema-type';
+import { Event } from '../../domain/entities/event.entity';
+import { Customer } from '../../domain/entities/customer.entity';
+import { EventSection } from '../../domain/entities/event-section.entity';
+import { EventSpot } from '../../domain/entities/event-spot.entity';
+import { Partner } from '../../domain/entities/partner.entity';
 import { CpfSchemaType } from './types/cpf.schema-type';
-import { EventSection } from '../../../../src/@core/domain/entities/event-section.entity';
+import { CustomerIdSchemaType } from './types/customer-id.schema-type';
+import { EventIdSchemaType } from './types/event-id.schema-type';
 import { EventSectionIdSchemaType } from './types/event-section-id.schema-type';
-import { EventSpot } from '../../../../src/@core/domain/entities/event-spot.entity';
 import { EventSpotIdSchemaType } from './types/event-spot-id.schema-type';
+import { PartnerIdSchemaType } from './types/partner-id.schema-type';
 
 export const PartnerSchema = new EntitySchema<Partner>({
   class: Partner,

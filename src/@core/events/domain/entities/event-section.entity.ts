@@ -2,9 +2,9 @@ import {
   AnyCollection,
   ICollection,
   CollectionFactory,
-} from '../../common/domain/collection';
-import { Entity } from '../../common/domain/entity';
-import { Uuid } from '../../common/domain/value-objects/uuid.vo';
+} from '../../../../../src/@core/common/domain/collection';
+import { Entity } from '../../../../../src/@core/common/domain/entity';
+import { Uuid } from '../../../../../src/@core/common/domain/value-objects/uuid.vo';
 import { EventSpot } from './event-spot.entity';
 
 export class EventSectionId extends Uuid {}

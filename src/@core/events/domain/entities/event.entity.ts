@@ -1,15 +1,15 @@
-import {
-  AnyCollection,
-  ICollection,
-  CollectionFactory,
-} from '../../common/domain/collection';
-import { AggregateRoot } from '../../common/domain/aggregate-root';
-import { Uuid } from '../../common/domain/value-objects/uuid.vo';
+import { Uuid } from '../../../../../src/@core/common/domain/value-objects/uuid.vo';
 import {
   CreateCommandEventSection,
   EventSection,
 } from './event-section.entity';
 import { PartnerId } from './partner.entity';
+import { AggregateRoot } from '../../../../../src/@core/common/domain/aggregate-root';
+import {
+  AnyCollection,
+  CollectionFactory,
+  ICollection,
+} from '../../../../../src/@core/common/domain/collection';
 
 export class EventId extends Uuid {}
 

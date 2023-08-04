@@ -1,6 +1,6 @@
 import { MikroORM, MySqlDriver } from '@mikro-orm/mysql';
 import { PartnerSchema } from './schemas';
-import { Partner } from '../../../../src/@core/domain/entities/partner.entity';
+import { Partner } from '../../domain/entities/partner.entity';
 
 describe('Schemas test', () => {
   let orm: MikroORM;
