@@ -5,7 +5,7 @@ import { ICustomerRepository } from '../../../domain/repositories/customer-repos
 import { CustomerSchema } from '../schemas';
 import { CustomerMySqlRepository } from './customer-mysql.repository';
 
-describe.skip('Customer MySql repository', () => {
+describe('Customer MySql repository', () => {
   let orm: MikroORM;
   let entityManager: EntityManager;
   let customerRepository: ICustomerRepository;

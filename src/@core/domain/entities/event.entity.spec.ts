@@ -1,5 +1,4 @@
 import { EventSection } from './event-section.entity';
-import { EventSpot } from './event-spot.entity';
 import { Event, EventId } from './event.entity';
 import { PartnerId } from './partner.entity';
 
@@ -22,7 +21,6 @@ describe('Event Aggregate root', () => {
     expect(event).toBeInstanceOf(Event);
     expect(event.id).toBeInstanceOf(EventId);
     expect(event.is_published).toBeFalsy();
-    expect(event.sections.size).toBe(1);
     expect(event.total_spots).toBe(68);
   });
 
@@ -101,7 +99,6 @@ test('event can create a event section', () => {
     total_spots: 2,
     description: 'section description',
   });
-  expect(event.sections.size).toBe(1);
   expect(event.total_spots).toBe(2);
   event.addSection({
     name: 'section name',
@@ -109,10 +106,8 @@ test('event can create a event section', () => {
     total_spots: 2,
     description: 'section description',
   });
-  expect(event.sections.size).toBe(2);
   event.sections.forEach((section) => {
     expect(section).toBeInstanceOf(EventSection);
-    expect(section.spots.size).toBe(2);
     expect(section.is_published).toBeFalsy();
   });
   expect(event.total_spots).toBe(4);

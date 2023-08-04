@@ -13,7 +13,7 @@ import { Partner } from '../../../domain/entities/partner.entity';
 import { PartnerMySqlRepository } from './partner-mysql.repository';
 import { IPartnerRepository } from '../../../domain/repositories/partner-repository.interface';
 
-describe.skip('Event MySql repository', () => {
+describe('Event MySql repository', () => {
   let orm: MikroORM;
   let entityManager: EntityManager;
   let eventRepository: IEventRepository;
@@ -40,13 +40,14 @@ describe.skip('Event MySql repository', () => {
   });
 
   beforeEach(async () => {
+    await orm.schema.refreshDatabase();
     entityManager = orm.em.fork();
     partnerRepository = new PartnerMySqlRepository(entityManager);
     eventRepository = new EventMySqlRepository(entityManager);
-    await orm.schema.refreshDatabase();
 
     partner = Partner.create({ name: 'partner name' });
     await partnerRepository.add(partner);
+    await entityManager.flush();
     event = partner.initEvent({
       date: new Date(),
       name: 'event name',

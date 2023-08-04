@@ -4,7 +4,7 @@ import { IPartnerRepository } from '../../../domain/repositories/partner-reposit
 import { PartnerSchema } from '../schemas';
 import { PartnerMySqlRepository } from './partner-mysql.repository';
 
-describe.skip('Partner MySql repository', () => {
+describe('Partner MySql repository', () => {
   let orm: MikroORM;
   let entityManager: EntityManager;
   let partnerRepository: IPartnerRepository;
