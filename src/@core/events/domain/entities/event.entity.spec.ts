@@ -14,7 +14,7 @@ describe('Event Aggregate root', () => {
     event.addSection({
       name: 'section name',
       price: 10.4,
-      total_spots: 68,
+      total_spots: 1,
       description: 'section description',
     });
 

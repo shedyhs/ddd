@@ -5,7 +5,7 @@ import {
 } from '../../../../../src/@core/common/domain/collection';
 import { Entity } from '../../../../../src/@core/common/domain/entity';
 import { Uuid } from '../../../../../src/@core/common/domain/value-objects/uuid.vo';
-import { EventSpot } from './event-spot.entity';
+import { EventSpot, EventSpotId } from './event-spot.entity';
 
 export class EventSectionId extends Uuid {}
 
@@ -68,6 +68,14 @@ export class EventSection extends Entity {
     for (let i = 0; i < this.total_spots; i++) {
       this.spots.add(EventSpot.create());
     }
+  }
+
+  changeSpotLocation(command: { spot_id: EventSpotId; location: string }) {
+    const spot = this.spots.find((spot) => spot.id.equals(command.spot_id));
+    if (!spot) {
+      throw new Error('Spot not found');
+    }
+    spot.changeLocation(command.location);
   }
 
   publishAll() {
