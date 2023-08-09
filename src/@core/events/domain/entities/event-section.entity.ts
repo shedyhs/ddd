@@ -78,6 +78,21 @@ export class EventSection extends Entity {
     spot.changeLocation(command.location);
   }
 
+  allowReserveSpot(spot_id: EventSpotId) {
+    if (!this.is_published) {
+      return false;
+    }
+    const spot = this.spots.find((section) =>
+      section.id.equals(spot_id),
+    );
+    if (!spot) {
+      throw new Error('Spot not found');
+    }
+    if (!this.is_published) {
+      return false;
+    }
+    return !spot.is_reserved;
+  }
   publishAll() {
     this.publish();
     this._spots.forEach((spot) => spot.publish());

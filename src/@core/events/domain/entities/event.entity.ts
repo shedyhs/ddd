@@ -117,6 +117,22 @@ export class Event extends AggregateRoot {
     });
   }
 
+  allowReserveSpot(command: {
+    section_id: EventSectionId;
+    spot_id: EventSpotId;
+  }) {
+    if (!this.is_published) {
+      return false;
+    }
+    const section = this.sections.find((section) =>
+      section.id.equals(command.section_id),
+    );
+    if (!section) {
+      throw new Error('Section not found');
+    }
+    return section.allowReserveSpot(command.spot_id);
+  }
+
   publishAll() {
     this.publish();
     this._sections.forEach((section) => section.publishAll());

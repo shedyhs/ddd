@@ -58,19 +58,9 @@ describe('Event MySql repository', () => {
     entityManager.clear();
   });
 
-  test('Should add a event in database', async () => {
-    await eventRepository.add(event);
-    await entityManager.flush();
-    entityManager.clear();
-    const [eventsInDb, numberOfEventsInDb] = await entityManager.findAndCount(
-      Event,
-      {
-        id: event.id,
-      },
-    );
-    expect(numberOfEventsInDb).toBe(1);
-    expect(eventsInDb[0].equals(event)).toBeTruthy();
-  });
+  afterAll(async () => {
+    await orm.close();
+  })
 
   test('Should add a event in database', async () => {
     await eventRepository.add(event);

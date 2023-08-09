@@ -28,23 +28,7 @@ describe('Customer MySql repository', () => {
   afterEach(async () => {
     await orm.close();
   });
-
-  test('Should add a customer in database', async () => {
-    const customer = Customer.create({
-      name: 'Ryan Ramirez',
-      cpf: '996.109.540-57',
-    });
-    await customerRepository.add(customer);
-    await entityManager.flush();
-    entityManager.clear();
-    const [customersInDb, numberOfCustomersInDb] =
-      await entityManager.findAndCount(Customer, {
-        id: customer.id,
-      });
-    expect(numberOfCustomersInDb).toBe(1);
-    expect(customersInDb[0].equals(customer)).toBeTruthy();
-  });
-
+  
   test('Should add a customer in database', async () => {
     const customer = Customer.create({
       name: 'Ryan Ramirez',
