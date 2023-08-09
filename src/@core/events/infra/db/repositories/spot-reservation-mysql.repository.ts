@@ -1,7 +1,7 @@
 import { EntityManager } from '@mikro-orm/mysql';
 import { SpotReservation } from '../../../domain/entities/spot-reservation.entity';
 import { ISpotReservationRepository } from '../../../domain/repositories/spot-reservation-repository.interface';
-import { EventSpotId } from 'src/@core/events/domain/entities/event-spot.entity';
+import { EventSpotId } from '../../../../events/domain/entities/event-spot.entity';
 
 export class SpotReservationMySqlRepository implements ISpotReservationRepository {
   constructor(private readonly entityManager: EntityManager) {}

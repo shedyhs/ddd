@@ -10,6 +10,7 @@ import {
   EventSectionSchema,
   EventSpotSchema,
   PartnerSchema,
+  SpotReservationSchema,
 } from '../schemas';
 import { PartnerMySqlRepository } from './partner-mysql.repository';
 import { IPartnerRepository } from '../../../../events/domain/repositories/partner-repository.interface';
@@ -17,6 +18,7 @@ import { Partner } from '../../../domain/entities/partner.entity';
 import { Event } from '../../../domain/entities/event.entity';
 import { ISpotReservationRepository } from '../../../../events/domain/repositories/spot-reservation-repository.interface';
 import { SpotReservation } from '../../../../events/domain/entities/spot-reservation.entity';
+import { SpotReservationMySqlRepository } from './spot-reservation-mysql.repository';
 
 describe('Spot Reservation MySql Repository', () => {
   let orm: MikroORM;
@@ -37,6 +39,7 @@ describe('Spot Reservation MySql Repository', () => {
         EventSectionSchema,
         EventSpotSchema,
         PartnerSchema,
+        SpotReservationSchema,
       ],
       type: 'mysql',
       host: 'localhost',
@@ -54,6 +57,7 @@ describe('Spot Reservation MySql Repository', () => {
     eventRepository = new EventMySqlRepository(entityManager);
     customerRepository = new CustomerMySqlRepository(entityManager);
     partnerRepository = new PartnerMySqlRepository(entityManager);
+    spotReservationRepository = new SpotReservationMySqlRepository(entityManager);
     partner = Partner.create({ name: 'partner name' });
     event = partner.initEvent({
       date: new Date(),
@@ -74,6 +78,7 @@ describe('Spot Reservation MySql Repository', () => {
     await eventRepository.add(event);
     await customerRepository.add(customer);
     await entityManager.flush();
+
     spotReservation = SpotReservation.create({
       customer_id: customer.id,
       spot_id: event.sections.find(() => true).spots.find(() => true).id,
@@ -94,9 +99,10 @@ describe('Spot Reservation MySql Repository', () => {
     const spotReservationInDb = await entityManager.findOne(SpotReservation, {
       spot_id: spotReservation.spot_id,
     });
+    const spotId = event.sections.find(() => true).spots.find(() => true).id;
     expect(spotReservationInDb).toBeDefined();
     expect(
-      spotReservation.spot_id.equals(spotReservationInDb.spot_id),
+      spotReservation.spot_id.equals(spotId),
     ).toBeTruthy();
   });
 });
