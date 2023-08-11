@@ -57,7 +57,9 @@ describe('Spot Reservation MySql Repository', () => {
     eventRepository = new EventMySqlRepository(entityManager);
     customerRepository = new CustomerMySqlRepository(entityManager);
     partnerRepository = new PartnerMySqlRepository(entityManager);
-    spotReservationRepository = new SpotReservationMySqlRepository(entityManager);
+    spotReservationRepository = new SpotReservationMySqlRepository(
+      entityManager,
+    );
     partner = Partner.create({ name: 'partner name' });
     event = partner.initEvent({
       date: new Date(),
@@ -101,8 +103,37 @@ describe('Spot Reservation MySql Repository', () => {
     });
     const spotId = event.sections.find(() => true).spots.find(() => true).id;
     expect(spotReservationInDb).toBeDefined();
-    expect(
-      spotReservation.spot_id.equals(spotId),
-    ).toBeTruthy();
+    expect(spotReservation.spot_id.equals(spotId)).toBeTruthy();
+  });
+
+  test('should find a spot reservation', async () => {
+    entityManager.persist(spotReservation);
+    await entityManager.flush();
+    entityManager.clear();
+    const foundSpotReservation = await spotReservationRepository.findById(
+      spotReservation.spot_id,
+    );
+    expect(spotReservation.equals(foundSpotReservation));
+  });
+
+  test('should list all spots reservations', async () => {
+    entityManager.persist(spotReservation);
+    await entityManager.flush();
+    entityManager.clear();
+    const foundSpotReservation = await spotReservationRepository.findAll();
+    expect(foundSpotReservation).toHaveLength(1);
+    expect(spotReservation.equals(foundSpotReservation.at(0)));
+  });
+
+  test('should delete a spot reservation', async () => {
+    entityManager.persist(spotReservation);
+    await entityManager.flush();
+    entityManager.clear();
+    const foundSpotReservation = await entityManager.find(SpotReservation, {});
+    await spotReservationRepository.delete(foundSpotReservation.at(0));
+    await entityManager.flush();
+    entityManager.clear();
+    const spotReservationInDb = await entityManager.count(SpotReservation, {});
+    expect(spotReservationInDb).toBe(0);
   });
 });
