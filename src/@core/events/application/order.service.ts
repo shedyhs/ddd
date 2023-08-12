@@ -3,6 +3,7 @@ import { EventSectionId } from '../domain/entities/event-section.entity';
 import { EventSpotId } from '../domain/entities/event-spot.entity';
 import { Order } from '../domain/entities/order.entity';
 import { SpotReservation } from '../domain/entities/spot-reservation.entity';
+import { ICustomerRepository } from '../domain/repositories/customer-repository.interface';
 import { IEventRepository } from '../domain/repositories/event-repository.interface';
 import { IOrderRepository } from '../domain/repositories/order-repository.interface';
 import { ISpotReservationRepository } from '../domain/repositories/spot-reservation-repository.interface';
@@ -10,7 +11,7 @@ import { ISpotReservationRepository } from '../domain/repositories/spot-reservat
 export class OrderService {
   constructor(
     private spotReservationRepository: ISpotReservationRepository,
-    private customerRepository: IEventRepository,
+    private customerRepository: ICustomerRepository,
     private eventRepository: IEventRepository,
     private orderRepository: IOrderRepository,
     private uow: IUnitOfWork,
@@ -44,7 +45,7 @@ export class OrderService {
     ) {
       throw new Error('Spot not availiable for reserve');
     }
-    const spotReservation = this.spotReservationRepository.findById(spotId);
+    const spotReservation = await this.spotReservationRepository.findById(spotId);
     if (spotReservation) {
       throw new Error('Spot already reserved');
     }
@@ -53,11 +54,9 @@ export class OrderService {
       spot_id: spotId,
     });
     await this.spotReservationRepository.add(reservation);
-
     const section = event.sections.find((section) =>
       section.id.equals(sectionId),
     );
-
     const order = Order.create({
       amount: section.price,
       customer_id: customer.id,

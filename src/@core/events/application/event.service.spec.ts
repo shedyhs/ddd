@@ -27,7 +27,8 @@ describe('Event Service Test', () => {
   let unitOfWork: IUnitOfWork;
   let eventService: EventService;
   let partner: Partner;
-  beforeEach(async () => {
+
+  beforeAll(async () => {
     orm = await MikroORM.init<MySqlDriver>({
       entities: [
         EventSchema,
@@ -43,6 +44,9 @@ describe('Event Service Test', () => {
       password: 'root',
       forceEntityConstructor: true,
     });
+  });
+
+  beforeEach(async () => {
     entityManager = orm.em.fork();
     unitOfWork = new UnitOfWorkMikroOrm(entityManager);
     eventRepository = new EventMySqlRepository(entityManager);
@@ -58,7 +62,12 @@ describe('Event Service Test', () => {
     await partnerRepository.add(partner);
     await unitOfWork.commit();
   });
+
   afterEach(async () => {
+    entityManager.clear();
+  });
+
+  afterAll(async () => {
     await orm.close();
   });
 
@@ -258,7 +267,6 @@ describe('Event Service Test', () => {
       spot_id: eventSpotId,
       location: 'location name',
     });
-
     expect(spot.id.equals(new EventSpotId(eventSpotId))).toBeTruthy();
     expect(spot.location).toBe('location name');
   });
