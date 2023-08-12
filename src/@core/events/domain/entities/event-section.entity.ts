@@ -78,13 +78,15 @@ export class EventSection extends Entity {
     spot.changeLocation(command.location);
   }
 
+  findSpot(command: { spot_id: EventSpotId }): EventSpot | undefined {
+    return this.spots.find((spot) => spot.id.equals(command.spot_id));
+  }
+
   allowReserveSpot(spot_id: EventSpotId) {
     if (!this.is_published) {
       return false;
     }
-    const spot = this.spots.find((section) =>
-      section.id.equals(spot_id),
-    );
+    const spot = this.findSpot({ spot_id });
     if (!spot) {
       throw new Error('Spot not found');
     }

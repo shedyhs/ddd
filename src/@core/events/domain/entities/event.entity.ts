@@ -133,6 +133,33 @@ export class Event extends AggregateRoot {
     return section.allowReserveSpot(command.spot_id);
   }
 
+  markSpotAsReserved(command: {
+    section_id: EventSectionId;
+    spot_id: EventSpotId;
+  }) {
+    const section = this.sections.find((section) =>
+      section.id.equals(command.section_id),
+    );
+    if (!section) {
+      throw new Error('Section not found');
+    }
+    this.findSection({ section_id: command.section_id })
+      .findSpot({ spot_id: command.spot_id })
+      .markAsReserved();
+  }
+
+  findSection(command: {
+    section_id: string | EventSectionId;
+  }): EventSection | undefined {
+    return this.sections.find((section) =>
+      section.id.equals(
+        typeof command.section_id === 'string'
+          ? new EventSectionId(command.section_id)
+          : command.section_id,
+      ),
+    );
+  }
+
   publishAll() {
     this.publish();
     this._sections.forEach((section) => section.publishAll());

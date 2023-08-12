@@ -104,8 +104,8 @@ describe('Order Service Test', () => {
 
   test('Should create an order', async () => {
     const sectionId = event.sections.find((section) => true).id.value;
-    const spotId = event.sections
-      .find((section) => true)
+    const spotId = event
+      .findSection({ section_id: sectionId })
       .spots.find((spot) => true).id.value;
     const order = await orderService.reserve({
       customer_id: customer.id.value,
@@ -128,6 +128,7 @@ describe('Order Service Test', () => {
   });
 
   test('Should list all created orders', async () => {
+    console.log(event);
     const order = Order.create({
       amount: 100,
       customer_id: customer.id,

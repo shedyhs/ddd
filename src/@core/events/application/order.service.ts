@@ -49,6 +49,10 @@ export class OrderService {
     if (spotReservation) {
       throw new Error('Spot already reserved');
     }
+    event.markSpotAsReserved({
+      section_id: sectionId,
+      spot_id: spotId,
+    })
     const reservation = SpotReservation.create({
       customer_id: customer.id,
       spot_id: spotId,

@@ -180,4 +180,13 @@ test('event can unpublish all related', () => {
     });
     expect(section.is_published).toBeFalsy();
   });
+
+  test('Should be able to find a section', () => {
+    const event = Event.create({
+      date: new Date(),
+      name: 'event name',
+      description: 'event description',
+      partner_id: new PartnerId(),
+    });
+  });
 });

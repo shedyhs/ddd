@@ -1,7 +1,7 @@
 import { EventSection } from './event-section.entity';
 
 describe('Event Section Aggregate Root', () => {
-  test.only('Should be able to create an Event Section', () => {
+  test('Should be able to create an Event Section', () => {
     const eventSection = EventSection.create({
       name: 'shoulder composed',
       price: 12.8,
@@ -125,5 +125,18 @@ describe('Event Section Aggregate Root', () => {
     eventSection.spots.forEach((spot) => {
       expect(spot.is_published).toBeFalsy();
     });
+  });
+
+  test('should find a spot', () => {
+    const eventSection = EventSection.create({
+      name: 'section name',
+      description: 'section description',
+      price: 100.1,
+      total_spots: 1,
+    });
+    const spotInSection = eventSection.spots.find(() => true);
+    const spot = eventSection.findSpot({ spot_id: spotInSection.id });
+    expect(spot).toBeDefined();
+    expect(spot.equals(spotInSection));
   });
 });
