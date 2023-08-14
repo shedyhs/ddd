@@ -10,7 +10,7 @@ import {
   CustomerSchema,
 } from '../../src/@core/events/infra/db/schemas';
 import { EntityManager } from '@mikro-orm/mysql';
-import { UnitOfWorkMikroOrm } from 'src/@core/common/infra/unit-of-work-mikro-orm';
+import { UnitOfWorkMikroOrm } from '../../src/@core/common/infra/unit-of-work-mikro-orm';
 
 @Global()
 @Module({
