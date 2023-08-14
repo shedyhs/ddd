@@ -23,6 +23,7 @@ import { Event } from '../domain/entities/event.entity';
 import { Customer } from '../domain/entities/customer.entity';
 import { Partner } from '../domain/entities/partner.entity';
 import { Order } from '../domain/entities/order.entity';
+import { PaymentGateway } from './payment.gateway';
 
 describe('Order Service Test', () => {
   let unitOfWork: IUnitOfWork;
@@ -31,6 +32,7 @@ describe('Order Service Test', () => {
   let customerRepository: ICustomerRepository;
   let eventRepository: IEventRepository;
   let orderService: OrderService;
+  let paymentGateway: PaymentGateway;
   let entityManager: EntityManager;
   let orm: MikroORM;
   let partner: Partner;
@@ -68,11 +70,13 @@ describe('Order Service Test', () => {
     );
     customerRepository = new CustomerMySqlRepository(entityManager);
     eventRepository = new EventMySqlRepository(entityManager);
+    paymentGateway = new PaymentGateway();
     orderService = new OrderService(
       spotReservationRepository,
       customerRepository,
       eventRepository,
       orderRepository,
+      paymentGateway,
       unitOfWork,
     );
     partner = Partner.create({ name: 'partner name' });
@@ -107,11 +111,12 @@ describe('Order Service Test', () => {
     const spotId = event
       .findSection({ section_id: sectionId })
       .spots.find((spot) => true).id.value;
-    const order = await orderService.reserve({
+    const order = await orderService.create({
       customer_id: customer.id.value,
       event_id: event.id.value,
       event_section_id: sectionId,
       event_spot_id: spotId,
+      card_token: 'card token',
     });
     const orderInDb = await orderRepository.findById(order.id);
     expect(order.equals(orderInDb));
@@ -128,7 +133,6 @@ describe('Order Service Test', () => {
   });
 
   test('Should list all created orders', async () => {
-    console.log(event);
     const order = Order.create({
       amount: 100,
       customer_id: customer.id,
@@ -147,16 +151,16 @@ describe('Order Service Test', () => {
     event.sections.find(() => true).spots.find(() => true).is_reserved = true;
     entityManager.persist(event);
     await entityManager.flush();
-    const sectionId = event.sections.find((section) => true).id.value;
-    const spotId = event.sections
-      .find((section) => true)
-      .spots.find((spot) => true).id.value;
+    const sectionId = event.sections.find(() => true).id.value;
+    const spotId = event.sections.find(() => true).spots.find((spot) => true)
+      .id.value;
     expect(() =>
-      orderService.reserve({
+      orderService.create({
         customer_id: customer.id.value,
         event_id: event.id.value,
         event_section_id: sectionId,
         event_spot_id: spotId,
+        card_token: 'card token',
       }),
     ).rejects.toThrow(Error);
     const spotReservationsInDb = await spotReservationRepository.findById(
@@ -169,16 +173,17 @@ describe('Order Service Test', () => {
     event.unPublish();
     entityManager.persist(event);
     await entityManager.flush();
-    const sectionId = event.sections.find((section) => true).id.value;
+    const sectionId = event.sections.find(() => true).id.value;
     const spotId = event.sections
       .find((section) => true)
       .spots.find((spot) => true).id.value;
     expect(() =>
-      orderService.reserve({
+      orderService.create({
         customer_id: customer.id.value,
         event_id: event.id.value,
         event_section_id: sectionId,
         event_spot_id: spotId,
+        card_token: 'card token',
       }),
     ).rejects.toThrow(Error);
     const spotReservationsInDb = await spotReservationRepository.findById(
@@ -196,11 +201,12 @@ describe('Order Service Test', () => {
       .find((section) => true)
       .spots.find((spot) => true).id.value;
     expect(() =>
-      orderService.reserve({
+      orderService.create({
         customer_id: customer.id.value,
         event_id: event.id.value,
         event_section_id: sectionId,
         event_spot_id: spotId,
+        card_token: 'card token',
       }),
     ).rejects.toThrow(Error);
     const spotReservationsInDb = await spotReservationRepository.findById(
@@ -221,11 +227,12 @@ describe('Order Service Test', () => {
       .find((section) => true)
       .spots.find((spot) => true).id.value;
     expect(() =>
-      orderService.reserve({
+      orderService.create({
         customer_id: customer.id.value,
         event_id: event.id.value,
         event_section_id: sectionId,
         event_spot_id: spotId,
+        card_token: 'card token',
       }),
     ).rejects.toThrow(Error);
     const spotReservationsInDb = await spotReservationRepository.findById(
