@@ -28,6 +28,9 @@ import { ICustomerRepository } from '../../src/@core/events/domain/repositories/
 import { IOrderRepository } from '../../src/@core/events/domain/repositories/order-repository.interface';
 import { PartnersController } from './partners/partners.controller';
 import { CustomersController } from './customers/customers.controller';
+import { EventsController } from './events/events.controller';
+import { EventSectionsController } from './events/event-sections.controller';
+import { EventSpotsController } from './events/event-spots.controller';
 
 @Module({
   imports: [
@@ -122,6 +125,6 @@ import { CustomersController } from './customers/customers.controller';
       inject: ['IPartnerRepository', 'IUnitOfWork'],
     },
   ],
-  controllers: [PartnersController, CustomersController],
+  controllers: [PartnersController, CustomersController, EventsController, EventSectionsController, EventSpotsController],
 })
 export class EventsModule {}

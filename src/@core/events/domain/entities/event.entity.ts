@@ -42,10 +42,9 @@ export class Event extends AggregateRoot {
   description?: string | null;
   date: Date;
   is_published: boolean;
-
   total_spots: number;
   total_spots_reserved: number;
-  partner_id: PartnerId | string;
+  partner_id: PartnerId;
   private _sections: ICollection<EventSection>;
 
   constructor(props: EventContructorProps) {
@@ -197,6 +196,9 @@ export class Event extends AggregateRoot {
       description: this.description,
       date: this.date,
       is_published: this.is_published,
+      total_spots: this.total_spots,
+      total_spots_reserved: this.total_spots_reserved,
+      partner_id: this.partner_id.value,
       sections: [...this.sections].map((section) => section.toJSON()),
     };
   }

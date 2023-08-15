@@ -101,6 +101,17 @@ export class EventService {
     return event;
   }
 
+  async unPublishAll(input: { event_id: string }) {
+    const event = await this.eventRepository.findById(input.event_id);
+    if (!event) {
+      throw new Error('Event not found');
+    }
+    event.unPublishAll();
+    await this.eventRepository.add(event);
+    await this.uow.commit();
+    return event;
+  }
+
   async list() {
     return this.eventRepository.findAll();
   }
