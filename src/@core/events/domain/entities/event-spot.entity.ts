@@ -53,7 +53,7 @@ export class EventSpot extends Entity {
 
   toJSON() {
     return {
-      id: this.id,
+      id: this.id.value,
       location: this.location,
       is_reserved: this.is_reserved,
       is_published: this.is_published,

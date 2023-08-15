@@ -1,0 +1,26 @@
+##* Hello world
+GET http://localhost:3000
+
+
+###! Create Partner
+POST http://localhost:3000/partners
+Content-Type: application/json
+
+{
+  "name": "Partner name"
+}
+
+###* List Partners
+GET http://localhost:3000/partners
+
+###! Create Customer
+POST http://localhost:3000/customers
+Content-Type: application/json
+
+{
+  "name": "Customer name",
+  "cpf": "035209851-10"
+}
+
+###* List Customers
+GET http://localhost:3000/customers
