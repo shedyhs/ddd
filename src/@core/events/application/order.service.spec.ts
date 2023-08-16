@@ -114,8 +114,8 @@ describe('Order Service Test', () => {
     const order = await orderService.create({
       customer_id: customer.id.value,
       event_id: event.id.value,
-      event_section_id: sectionId,
-      event_spot_id: spotId,
+      section_id: sectionId,
+      spot_id: spotId,
       card_token: 'card token',
     });
     const orderInDb = await orderRepository.findById(order.id);
@@ -158,8 +158,8 @@ describe('Order Service Test', () => {
       orderService.create({
         customer_id: customer.id.value,
         event_id: event.id.value,
-        event_section_id: sectionId,
-        event_spot_id: spotId,
+        section_id: sectionId,
+        spot_id: spotId,
         card_token: 'card token',
       }),
     ).rejects.toThrow(Error);
@@ -181,8 +181,8 @@ describe('Order Service Test', () => {
       orderService.create({
         customer_id: customer.id.value,
         event_id: event.id.value,
-        event_section_id: sectionId,
-        event_spot_id: spotId,
+        section_id: sectionId,
+        spot_id: spotId,
         card_token: 'card token',
       }),
     ).rejects.toThrow(Error);
@@ -204,8 +204,8 @@ describe('Order Service Test', () => {
       orderService.create({
         customer_id: customer.id.value,
         event_id: event.id.value,
-        event_section_id: sectionId,
-        event_spot_id: spotId,
+        section_id: sectionId,
+        spot_id: spotId,
         card_token: 'card token',
       }),
     ).rejects.toThrow(Error);
@@ -230,8 +230,8 @@ describe('Order Service Test', () => {
       orderService.create({
         customer_id: customer.id.value,
         event_id: event.id.value,
-        event_section_id: sectionId,
-        event_spot_id: spotId,
+        section_id: sectionId,
+        spot_id: spotId,
         card_token: 'card token',
       }),
     ).rejects.toThrow(Error);

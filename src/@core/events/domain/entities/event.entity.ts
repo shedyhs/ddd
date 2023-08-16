@@ -145,6 +145,7 @@ export class Event extends AggregateRoot {
     this.findSection({ section_id: command.section_id })
       .findSpot({ spot_id: command.spot_id })
       .markAsReserved();
+    this.total_spots_reserved += 1;
   }
 
   findSection(command: {

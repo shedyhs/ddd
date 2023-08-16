@@ -139,10 +139,10 @@ export class EventService {
   }
 
   async changeLocation(input: {
-    location: string;
     event_id: string;
     section_id: string;
     spot_id: string;
+    location: string;
   }) {
     const event = await this.eventRepository.findById(input.event_id);
     if (!event) {

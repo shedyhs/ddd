@@ -19,17 +19,17 @@ export class EventsController {
   }
 
   @Patch('/:event_id/publish-all')
-  publishAll(@Param() event_id: string) {
+  publishAll(@Param('event_id') event_id: string) {
     return this.eventService.publishAll({ event_id });
   }
 
   @Patch('/:event_id/unpublish-all')
-  unPublishAll(@Param() event_id: string) {
+  unPublishAll(@Param('event_id') event_id: string) {
     return this.eventService.unPublishAll({ event_id });
   }
 
   @Put('/:event_id')
-  update(@Param() event_id: string, @Body() body: UpdateEventDto) {
+  update(@Param('event_id') event_id: string, @Body() body: UpdateEventDto) {
     return this.eventService.update(event_id, body)
   }
 }

@@ -31,6 +31,7 @@ import { CustomersController } from './customers/customers.controller';
 import { EventsController } from './events/events.controller';
 import { EventSectionsController } from './events/event-sections.controller';
 import { EventSpotsController } from './events/event-spots.controller';
+import { OrderController } from './events/order.controller';
 
 @Module({
   imports: [
@@ -125,6 +126,13 @@ import { EventSpotsController } from './events/event-spots.controller';
       inject: ['IPartnerRepository', 'IUnitOfWork'],
     },
   ],
-  controllers: [PartnersController, CustomersController, EventsController, EventSectionsController, EventSpotsController],
+  controllers: [
+    PartnersController,
+    CustomersController,
+    EventsController,
+    EventSectionsController,
+    EventSpotsController,
+    OrderController,
+  ],
 })
 export class EventsModule {}

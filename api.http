@@ -14,7 +14,7 @@ Content-Type: application/json
 ###* List Partners
 GET {{base_url}}/partners
 
-@partner_id = c22e4874-2670-46a5-b14b-8f6bc95554df
+@partner_id = 460b73a2-9c59-48fa-9080-d48a7f0773c7
 
 ###! Create Customer
 POST {{base_url}}/customers
@@ -28,7 +28,7 @@ Content-Type: application/json
 ###* List Customers
 GET {{base_url}}/customers
 
-@customer_id = 6b6513f5-69cc-4393-9476-fbce518349de
+@customer_id = 6db468b6-3341-4fa0-8f11-ce50e490e401
 
 ###! Create Event
 POST {{base_url}}/events
@@ -44,7 +44,13 @@ Content-Type: application/json
 ###* List Events
 GET {{base_url}}/events
 
-@event_id = a04c9551-3e8d-43ce-84aa-e9a81dabab6c
+@event_id = 11c2050d-3f7e-4e5b-895e-4e61c16138a4
+
+###? Publish event
+PATCH {{base_url}}/events/{{event_id}}/publish-all
+
+###? Unpublish event
+PATCH {{base_url}}/events/{{event_id}}/unpublish-all
 
 ###! Create Event Section
 POST {{base_url}}/events/{{event_id}}/sections
@@ -57,9 +63,10 @@ Content-Type: application/json
   "price": 100.00
 }
 
-@section_id = d0df15b5-533d-4050-b21f-ddc8f031a5fc
+###
+@section_id = 5b4d02fb-599d-46ad-86d9-2517fc2ff525
 
-@spot_id = 8c30612f-d9f8-4fbd-9f10-62d569bb9e6f
+@spot_id = e0baa558-90b7-4c07-b72e-5e857e52017c
 
 ###* List sections of event
 GET {{base_url}}/events/{{event_id}}/sections
@@ -82,4 +89,19 @@ Content-Type: application/json
 
 {
   "location": "spot location"
+}
+
+
+###* List orders
+GET {{base_url}}/events/{{event_id}}/orders HTTP/1.1
+
+###! Create Order
+POST {{base_url}}/events/{{event_id}}/orders
+Content-Type: application/json
+
+{
+  "customer_id": "{{customer_id}}",
+  "section_id": "{{section_id}}",
+  "spot_id": "{{spot_id}}",
+  "card_token": "tok_visa"
 }

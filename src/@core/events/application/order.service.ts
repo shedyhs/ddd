@@ -25,8 +25,8 @@ export class OrderService {
 
   async create(input: {
     event_id: string;
-    event_section_id: string;
-    event_spot_id: string;
+    section_id: string;
+    spot_id: string;
     customer_id: string;
     card_token: string;
   }) {
@@ -38,8 +38,8 @@ export class OrderService {
     if (!event) {
       throw new Error('Event not found');
     }
-    const sectionId = new EventSectionId(input.event_section_id);
-    const spotId = new EventSpotId(input.event_spot_id);
+    const sectionId = new EventSectionId(input.section_id);
+    const spotId = new EventSpotId(input.spot_id);
     if (
       !event.allowReserveSpot({
         section_id: sectionId,
@@ -54,6 +54,11 @@ export class OrderService {
     if (spotReservation) {
       throw new Error('Spot already reserved');
     }
+    event.markSpotAsReserved({
+      section_id: sectionId,
+      spot_id: spotId,
+    });
+    await this.eventRepository.add(event);
     return await this.uow.runTransaction(async () => {
       try {
         await this.uow.commit();
