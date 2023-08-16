@@ -1,5 +1,5 @@
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import {
   EventSchema,
   EventSectionSchema,
@@ -32,6 +32,10 @@ import { EventsController } from './events/events.controller';
 import { EventSectionsController } from './events/event-sections.controller';
 import { EventSpotsController } from './events/event-spots.controller';
 import { OrderController } from './events/order.controller';
+import { ApplicationModule } from '../../src/application/application.module';
+import { ApplicationService } from '../../src/@core/common/application/application.service';
+import { DomainEventMediator } from '../../src/@core/common/domain/domain-event-manager';
+import { PartnerCreated } from '../../src/@core/events/domain/domain-events/partner-created.event';
 
 @Module({
   imports: [
@@ -44,6 +48,7 @@ import { OrderController } from './events/order.controller';
       CustomerSchema,
       PartnerSchema,
     ]),
+    ApplicationModule,
   ],
   providers: [
     {
@@ -121,9 +126,11 @@ import { OrderController } from './events/order.controller';
     },
     {
       provide: PartnerService,
-      useFactory: (partnerRepository: IPartnerRepository, uow: IUnitOfWork) =>
-        new PartnerService(partnerRepository, uow),
-      inject: ['IPartnerRepository', 'IUnitOfWork'],
+      useFactory: (
+        partnerRepository: IPartnerRepository,
+        applicationService: ApplicationService,
+      ) => new PartnerService(partnerRepository, applicationService),
+      inject: ['IPartnerRepository', ApplicationService],
     },
   ],
   controllers: [
@@ -135,4 +142,14 @@ import { OrderController } from './events/order.controller';
     OrderController,
   ],
 })
-export class EventsModule {}
+export class EventsModule implements OnModuleInit {
+  constructor(private readonly domainEventMediator: DomainEventMediator) {}
+  onModuleInit() {
+    this.domainEventMediator.register(
+      PartnerCreated.name,
+      (event: PartnerCreated) => {
+        console.log('PartnerCreated event received', event);
+      },
+    );
+  }
+}

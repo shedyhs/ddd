@@ -1,5 +1,6 @@
 import { EntityManager } from '@mikro-orm/mysql';
 import { IUnitOfWork } from '../application/unit-of-work.interface';
+import { AggregateRoot } from '../domain/aggregate-root';
 
 export class UnitOfWorkMikroOrm implements IUnitOfWork {
   constructor(private entityManager: EntityManager) {}
@@ -16,7 +17,7 @@ export class UnitOfWorkMikroOrm implements IUnitOfWork {
     this.entityManager.rollback();
   }
   async runTransaction<T>(callback: () => Promise<T>): Promise<T> {
-    return this.entityManager.transactional(callback)
+    return this.entityManager.transactional(callback);
   }
 
   async commit(): Promise<void> {
@@ -25,5 +26,12 @@ export class UnitOfWorkMikroOrm implements IUnitOfWork {
 
   async rollback(): Promise<void> {
     this.entityManager.clear();
+  }
+
+  getAggregateRoots(): AggregateRoot[] {
+    return [
+      ...this.entityManager.getUnitOfWork().getPersistStack(),
+      ...this.entityManager.getUnitOfWork().getRemoveStack(),
+    ] as AggregateRoot[];
   }
 }
