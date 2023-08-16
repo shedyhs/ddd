@@ -1,3 +1,4 @@
+import { initOrm } from '../init-orm';
 import { Customer } from './customer.entity';
 import { EventSpotId } from './event-spot.entity';
 import { Event } from './event.entity';
@@ -5,6 +6,7 @@ import { Order, OrderStatus } from './order.entity';
 import { Partner } from './partner.entity';
 
 describe('Order Entity Test', () => {
+  initOrm();
   let event: Event;
   let customer: Customer;
   let partner: Partner;

@@ -1,3 +1,4 @@
+import { initOrm } from '../init-orm';
 import { Customer } from './customer.entity';
 import { EventSpotId } from './event-spot.entity';
 import { Event } from './event.entity';
@@ -5,6 +6,7 @@ import { Partner } from './partner.entity';
 import { SpotReservation } from './spot-reservation.entity';
 
 describe('Spot Reservation Entity Test', () => {
+  initOrm();
   let customer: Customer;
   let partner: Partner;
   let event: Event;

@@ -1,6 +1,8 @@
+import { initOrm } from '../init-orm';
 import { EventSection } from './event-section.entity';
 
 describe('Event Section Aggregate Root', () => {
+  initOrm();
   test('Should be able to create an Event Section', () => {
     const eventSection = EventSection.create({
       name: 'shoulder composed',

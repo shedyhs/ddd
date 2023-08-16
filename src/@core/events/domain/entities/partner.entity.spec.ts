@@ -1,7 +1,9 @@
+import { initOrm } from '../init-orm';
 import { Event } from './event.entity';
 import { Partner } from './partner.entity';
 
 describe('Partner Aggregate Root', () => {
+  initOrm();
   test('Should be able to create an Partner', () => {
     const partner = Partner.create({
       name: 'Jon Harris',

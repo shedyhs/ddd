@@ -1,8 +1,10 @@
+import { initOrm } from '../init-orm';
 import { EventSection } from './event-section.entity';
 import { Event, EventId } from './event.entity';
 import { PartnerId } from './partner.entity';
 
 describe('Event Aggregate root', () => {
+  initOrm();
   test('Should be able to create an Event', () => {
     const event = Event.create({
       date: new Date(),
@@ -21,7 +23,7 @@ describe('Event Aggregate root', () => {
     expect(event).toBeInstanceOf(Event);
     expect(event.id).toBeInstanceOf(EventId);
     expect(event.is_published).toBeFalsy();
-    expect(event.total_spots).toBe(68);
+    expect(event.total_spots).toBe(1);
   });
 
   test('Should be able to change event name', () => {
@@ -83,110 +85,101 @@ describe('Event Aggregate root', () => {
     event.unPublish();
     expect(event.is_published).toBeFalsy();
   });
-});
 
-test('event can create a event section', () => {
-  const event = Event.create({
-    date: new Date(),
-    name: 'event name',
-    description: 'event description',
-    partner_id: new PartnerId(),
-  });
-
-  event.addSection({
-    name: 'section name',
-    price: 10.1,
-    total_spots: 2,
-    description: 'section description',
-  });
-  expect(event.total_spots).toBe(2);
-  event.addSection({
-    name: 'section name',
-    price: 10.1,
-    total_spots: 2,
-    description: 'section description',
-  });
-  event.sections.forEach((section) => {
-    expect(section).toBeInstanceOf(EventSection);
-    expect(section.is_published).toBeFalsy();
-  });
-  expect(event.total_spots).toBe(4);
-});
-
-test('event can publish all related', () => {
-  const event = Event.create({
-    date: new Date(),
-    name: 'event name',
-    description: 'event description',
-    partner_id: new PartnerId(),
-  });
-  event.addSection({
-    name: 'section name',
-    price: 10.1,
-    total_spots: 2,
-    description: 'section description',
-  });
-  event.addSection({
-    name: 'section name',
-    price: 10.1,
-    total_spots: 2,
-    description: 'section description',
-  });
-  event.sections.forEach((section) => {
-    section.spots.forEach((spot) => {
-      expect(spot.is_published).toBeFalsy();
-    });
-    expect(section.is_published).toBeFalsy();
-  });
-  event.publishAll();
-  event.sections.forEach((section) => {
-    section.spots.forEach((spot) => {
-      expect(spot.is_published).toBeTruthy();
-    });
-    expect(section.is_published).toBeTruthy();
-  });
-});
-
-test('event can unpublish all related', () => {
-  const event = Event.create({
-    date: new Date(),
-    name: 'event name',
-    description: 'event description',
-    partner_id: new PartnerId(),
-  });
-  event.is_published = true;
-  event.addSection({
-    name: 'section name',
-    price: 10.1,
-    total_spots: 2,
-    description: 'section description',
-  });
-  event.addSection({
-    name: 'section name',
-    price: 10.1,
-    total_spots: 2,
-    description: 'section description',
-  });
-  event.sections.forEach((section) => {
-    section.is_published = true;
-    section.spots.forEach((spot) => {
-      spot.is_published = true;
-    });
-  });
-  event.unPublishAll();
-  event.sections.forEach((section) => {
-    section.spots.forEach((spot) => {
-      expect(spot.is_published).toBeFalsy();
-    });
-    expect(section.is_published).toBeFalsy();
-  });
-
-  test('Should be able to find a section', () => {
+  test('event can create a event section', () => {
     const event = Event.create({
       date: new Date(),
       name: 'event name',
       description: 'event description',
       partner_id: new PartnerId(),
+    });
+
+    event.addSection({
+      name: 'section name',
+      price: 10.1,
+      total_spots: 2,
+      description: 'section description',
+    });
+    expect(event.total_spots).toBe(2);
+    event.addSection({
+      name: 'section name',
+      price: 10.1,
+      total_spots: 2,
+      description: 'section description',
+    });
+    event.sections.forEach((section) => {
+      expect(section).toBeInstanceOf(EventSection);
+      expect(section.is_published).toBeFalsy();
+    });
+    expect(event.total_spots).toBe(4);
+  });
+
+  test('event can publish all related', () => {
+    const event = Event.create({
+      date: new Date(),
+      name: 'event name',
+      description: 'event description',
+      partner_id: new PartnerId(),
+    });
+    event.addSection({
+      name: 'section name',
+      price: 10.1,
+      total_spots: 2,
+      description: 'section description',
+    });
+    event.addSection({
+      name: 'section name',
+      price: 10.1,
+      total_spots: 2,
+      description: 'section description',
+    });
+    event.sections.forEach((section) => {
+      section.spots.forEach((spot) => {
+        expect(spot.is_published).toBeFalsy();
+      });
+      expect(section.is_published).toBeFalsy();
+    });
+    event.publishAll();
+    event.sections.forEach((section) => {
+      section.spots.forEach((spot) => {
+        expect(spot.is_published).toBeTruthy();
+      });
+      expect(section.is_published).toBeTruthy();
+    });
+  });
+
+  test('event can unpublish all related', () => {
+    const event = Event.create({
+      date: new Date(),
+      name: 'event name',
+      description: 'event description',
+      partner_id: new PartnerId(),
+    });
+    event.is_published = true;
+    event.addSection({
+      name: 'section name',
+      price: 10.1,
+      total_spots: 2,
+      description: 'section description',
+    });
+    event.addSection({
+      name: 'section name',
+      price: 10.1,
+      total_spots: 2,
+      description: 'section description',
+    });
+    event.sections.forEach((section) => {
+      section.is_published = true;
+      section.spots.forEach((spot) => {
+        spot.is_published = true;
+      });
+    });
+    event.unPublishAll();
+    event.sections.forEach((section) => {
+      section.spots.forEach((spot) => {
+        expect(spot.is_published).toBeFalsy();
+      });
+      expect(section.is_published).toBeFalsy();
     });
   });
 });

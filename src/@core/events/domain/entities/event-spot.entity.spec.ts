@@ -1,6 +1,8 @@
+import { initOrm } from '../init-orm';
 import { EventSpot } from './event-spot.entity';
 
 describe('Event Spot Entity', () => {
+  initOrm();
   test('Should create a Event Spot', () => {
     const spot = EventSpot.create();
     expect(spot).toBeInstanceOf(EventSpot);
