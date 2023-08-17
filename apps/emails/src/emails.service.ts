@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class EmailsService {
-  getHello(): string {
-    return 'Hello World!';
+  async sendWelcomeToPartner(payload: any): Promise<void> {
+    console.log(`Partner welcome email sended to "${payload.name}"`);
   }
 }

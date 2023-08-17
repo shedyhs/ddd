@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { EmailsController } from './emails.controller';
 import { EmailsService } from './emails.service';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { ConsumerService } from './consumer.service';
@@ -11,7 +10,6 @@ import { ConsumerService } from './consumer.service';
       connectionInitOptions: { wait: false },
     }),
   ],
-  controllers: [EmailsController],
   providers: [EmailsService, ConsumerService],
 })
 export class EmailsModule {}

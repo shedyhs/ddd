@@ -23,7 +23,6 @@ export class StoredEventMySqlRepository implements IStoredEventRepository {
   }
 
   add(domainEvent: IDomainEvent): StoredEvent {
-    console.log(domainEvent)
     const storedEvent = StoredEvent.create(domainEvent);
     this.entityManager.persist(storedEvent);
     return storedEvent;
