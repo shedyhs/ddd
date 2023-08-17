@@ -9,6 +9,7 @@ export class ExampleHandler implements IDomainEventHandler {
     private partnerRepository: IPartnerRepository,
   ) {}
   async handle(event: PartnerCreated): Promise<void> {
+    // apply rules, make queries but cannot commit changes
   }
 
   static listensTo(): string[] {

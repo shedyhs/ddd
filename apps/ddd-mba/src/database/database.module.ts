@@ -11,6 +11,7 @@ import {
 } from '../../src/@core/events/infra/db/schemas';
 import { EntityManager } from '@mikro-orm/mysql';
 import { UnitOfWorkMikroOrm } from '../../src/@core/common/infra/unit-of-work-mikro-orm';
+import { StoredEventSchema } from '../@core/stored-events/infra/schemas';
 
 @Global()
 @Module({
@@ -24,6 +25,7 @@ import { UnitOfWorkMikroOrm } from '../../src/@core/common/infra/unit-of-work-mi
         SpotReservationSchema,
         PartnerSchema,
         CustomerSchema,
+        StoredEventSchema
       ],
       type: 'mysql',
       host: 'localhost',

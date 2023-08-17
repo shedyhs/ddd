@@ -7,6 +7,7 @@ import {
   PartnerSchema,
   CustomerSchema,
 } from './@core/events/infra/db/schemas';
+import { StoredEventSchema } from './@core/stored-events/infra/schemas';
 
 export default {
   entities: [
@@ -17,6 +18,7 @@ export default {
     SpotReservationSchema,
     PartnerSchema,
     CustomerSchema,
+    StoredEventSchema,
   ],
   type: 'mysql',
   host: 'localhost',
