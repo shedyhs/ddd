@@ -1,5 +1,6 @@
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Module, OnModuleInit } from '@nestjs/common';
+import { Queue } from 'bull';
 import {
   EventSchema,
   EventSectionSchema,
@@ -36,6 +37,11 @@ import { ApplicationModule } from '../../src/application/application.module';
 import { ApplicationService } from '../../src/@core/common/application/application.service';
 import { DomainEventMediator } from '../../src/@core/common/domain/domain-event-manager';
 import { PartnerCreated } from '../../src/@core/events/domain/domain-events/partner-created.event';
+import { ExampleHandler } from '../../src/@core/events/application/handlers/example.handler';
+import { ModuleRef } from '@nestjs/core';
+import { BullModule, InjectQueue } from '@nestjs/bull';
+import { IIntegrationEvent } from '../@core/common/domain/integration-event';
+import { PartnerCreatedIntegrationEvent } from '../@core/events/domain/integration-events/partner-created.int-events';
 
 @Module({
   imports: [
@@ -49,6 +55,9 @@ import { PartnerCreated } from '../../src/@core/events/domain/domain-events/part
       PartnerSchema,
     ]),
     ApplicationModule,
+    BullModule.registerQueue({
+      name: 'integration-events',
+    }),
   ],
   providers: [
     {
@@ -132,6 +141,14 @@ import { PartnerCreated } from '../../src/@core/events/domain/domain-events/part
       ) => new PartnerService(partnerRepository, applicationService),
       inject: ['IPartnerRepository', ApplicationService],
     },
+    {
+      provide: ExampleHandler,
+      useFactory: (
+        domainEventMediator: DomainEventMediator,
+        partnerRepository: IPartnerRepository,
+      ) => new ExampleHandler(domainEventMediator, partnerRepository),
+      inject: [DomainEventMediator, 'IPartnerRepository'],
+    },
   ],
   controllers: [
     PartnersController,
@@ -143,13 +160,25 @@ import { PartnerCreated } from '../../src/@core/events/domain/domain-events/part
   ],
 })
 export class EventsModule implements OnModuleInit {
-  constructor(private readonly domainEventMediator: DomainEventMediator) {}
+  constructor(
+    private readonly domainEventMediator: DomainEventMediator,
+    private moduleRef: ModuleRef,
+    @InjectQueue('integration-events')
+    private integrationEventsQueue: Queue<IIntegrationEvent>,
+  ) {}
   onModuleInit() {
-    this.domainEventMediator.register(
-      PartnerCreated.name,
-      (event: PartnerCreated) => {
-        console.log('PartnerCreated event received', event);
-      },
-    );
+    ExampleHandler.listensTo().forEach((eventName: string) => {
+      this.domainEventMediator.register(
+        eventName,
+        async (event: PartnerCreated) => {
+          const handler = await this.moduleRef.resolve(ExampleHandler);
+          await handler.handle(event);
+        },
+      );
+    });
+    this.domainEventMediator.registerForIntegration(PartnerCreated.name, async (event) => {
+      const integrationEvent = new PartnerCreatedIntegrationEvent(event);
+      await this.integrationEventsQueue.add(integrationEvent);
+    });
   }
 }
