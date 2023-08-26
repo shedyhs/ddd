@@ -1,4 +1,4 @@
-import { IUnitOfWork } from '../../common/application/unit-of-work.interface';
+import { ApplicationService } from '../../common/application/application.service';
 import { EventSectionId } from '../domain/entities/event-section.entity';
 import { EventSpotId } from '../domain/entities/event-spot.entity';
 import { IEventRepository } from '../domain/repositories/event-repository.interface';
@@ -8,7 +8,7 @@ export class EventService {
   constructor(
     private partnerRepository: IPartnerRepository,
     private eventRepository: IEventRepository,
-    private uow: IUnitOfWork,
+    private applicationService: ApplicationService,
   ) {}
 
   async create(input: {
@@ -17,34 +17,36 @@ export class EventService {
     description?: string;
     partner_id: string;
   }) {
-    const partner = await this.partnerRepository.findById(input.partner_id);
-    if (!partner) {
-      throw new Error('Partner not found');
-    }
-    const event = partner.initEvent({
-      date: input.date,
-      name: input.name,
-      description: input.description,
+    return await this.applicationService.run(async () => {
+      const partner = await this.partnerRepository.findById(input.partner_id);
+      if (!partner) {
+        throw new Error('Partner not found');
+      }
+      const event = partner.initEvent({
+        date: input.date,
+        name: input.name,
+        description: input.description,
+      });
+      this.eventRepository.add(event);
+      return event;
     });
-    this.eventRepository.add(event);
-    await this.uow.commit();
-    return event;
   }
 
   async update(
     id: string,
     input: { name?: string; description?: string; date: Date },
   ) {
-    const event = await this.eventRepository.findById(id);
-    if (!event) {
-      throw new Error('Event not found');
-    }
-    input.name && event.changeName(input.name);
-    input.date && event.changeDate(input.date);
-    input.description && event.changeDescription(input.description);
-    this.eventRepository.add(event);
-    await this.uow.commit();
-    return event;
+    return await this.applicationService.run(async () => {
+      const event = await this.eventRepository.findById(id);
+      if (!event) {
+        throw new Error('Event not found');
+      }
+      input.name && event.changeName(input.name);
+      input.date && event.changeDate(input.date);
+      input.description && event.changeDescription(input.description);
+      this.eventRepository.add(event);
+      return event;
+    });
   }
 
   async addSection(input: {
@@ -54,19 +56,20 @@ export class EventService {
     price: number;
     event_id: string;
   }) {
-    const event = await this.eventRepository.findById(input.event_id);
-    if (!event) {
-      throw new Error('Event not found');
-    }
-    event.addSection({
-      name: input.name,
-      description: input.description,
-      total_spots: input.total_spots,
-      price: input.price,
+    return await this.applicationService.run(async () => {
+      const event = await this.eventRepository.findById(input.event_id);
+      if (!event) {
+        throw new Error('Event not found');
+      }
+      event.addSection({
+        name: input.name,
+        description: input.description,
+        total_spots: input.total_spots,
+        price: input.price,
+      });
+      await this.eventRepository.add(event);
+      return event;
     });
-    await this.eventRepository.add(event);
-    await this.uow.commit();
-    return event;
   }
 
   async updateSection(input: {
@@ -75,41 +78,44 @@ export class EventService {
     event_id: string;
     section_id: string;
   }) {
-    const event = await this.eventRepository.findById(input.event_id);
-    if (!event) {
-      throw new Error('Event not found');
-    }
-    const sectionId = new EventSectionId(input.section_id);
-    event.changeSectionInformation({
-      name: input.name,
-      description: input.description,
-      section_id: sectionId,
+    return await this.applicationService.run(async () => {
+      const event = await this.eventRepository.findById(input.event_id);
+      if (!event) {
+        throw new Error('Event not found');
+      }
+      const sectionId = new EventSectionId(input.section_id);
+      event.changeSectionInformation({
+        name: input.name,
+        description: input.description,
+        section_id: sectionId,
+      });
+      await this.eventRepository.add(event);
+      return event.sections;
     });
-    await this.eventRepository.add(event);
-    await this.uow.commit();
-    return event.sections;
   }
 
   async publishAll(input: { event_id: string }) {
-    const event = await this.eventRepository.findById(input.event_id);
-    if (!event) {
-      throw new Error('Event not found');
-    }
-    event.publishAll();
-    await this.eventRepository.add(event);
-    await this.uow.commit();
-    return event;
+    return await this.applicationService.run(async () => {
+      const event = await this.eventRepository.findById(input.event_id);
+      if (!event) {
+        throw new Error('Event not found');
+      }
+      event.publishAll();
+      await this.eventRepository.add(event);
+      return event;
+    });
   }
 
   async unPublishAll(input: { event_id: string }) {
-    const event = await this.eventRepository.findById(input.event_id);
-    if (!event) {
-      throw new Error('Event not found');
-    }
-    event.unPublishAll();
-    await this.eventRepository.add(event);
-    await this.uow.commit();
-    return event;
+    return await this.applicationService.run(async () => {
+      const event = await this.eventRepository.findById(input.event_id);
+      if (!event) {
+        throw new Error('Event not found');
+      }
+      event.unPublishAll();
+      await this.eventRepository.add(event);
+      return event;
+    });
   }
 
   async list() {
@@ -144,22 +150,23 @@ export class EventService {
     spot_id: string;
     location: string;
   }) {
-    const event = await this.eventRepository.findById(input.event_id);
-    if (!event) {
-      throw new Error('Event not found');
-    }
-    const sectionId = new EventSectionId(input.section_id);
-    const spotId = new EventSpotId(input.spot_id);
-    event.changeLocation({
-      section_id: sectionId,
-      spot_id: spotId,
-      location: input.location,
+    return await this.applicationService.run(async () => {
+      const event = await this.eventRepository.findById(input.event_id);
+      if (!event) {
+        throw new Error('Event not found');
+      }
+      const sectionId = new EventSectionId(input.section_id);
+      const spotId = new EventSpotId(input.spot_id);
+      event.changeLocation({
+        section_id: sectionId,
+        spot_id: spotId,
+        location: input.location,
+      });
+      await this.eventRepository.add(event);
+      const section = event.sections.find((section) =>
+        section.id.equals(sectionId),
+      );
+      return section.spots.find((spot) => spot.id.equals(spotId));
     });
-    await this.eventRepository.add(event);
-    const section = event.sections.find((section) =>
-      section.id.equals(sectionId),
-    );
-    await this.uow.commit();
-    return section.spots.find((spot) => spot.id.equals(spotId));
   }
 }

@@ -12,6 +12,7 @@ import {
   ICollection,
 } from '../../../../../src/@core/common/domain/collection';
 import { EventSpotId } from './event-spot.entity';
+import { EventCreated } from '../domain-events/event-created.event';
 
 export class EventId extends Uuid {}
 
@@ -67,7 +68,7 @@ export class Event extends AggregateRoot {
   }
 
   static create(command: CreateEventCommand): Event {
-    return new Event({
+    const event = new Event({
       name: command.name,
       description: command.description ?? undefined,
       date: command.date,
@@ -76,6 +77,19 @@ export class Event extends AggregateRoot {
       total_spots: 0,
       total_spots_reserved: 0,
     });
+    event.addEvent(
+      new EventCreated(
+        event.id,
+        event.name,
+        event.description,
+        event.date,
+        event.partner_id,
+        event.is_published,
+        event.total_spots,
+        event.total_spots_reserved,
+      ),
+    );
+    return event;
   }
 
   addSection(command: AddSectionCommand) {

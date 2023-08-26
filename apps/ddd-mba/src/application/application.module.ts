@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ApplicationService } from '../../src/@core/common/application/application.service';
-import { DomainEventMediator } from '../../src/@core/common/domain/domain-event-manager';
+import { DomainEventMediator } from '../@core/common/domain/domain-event-mediator';
 import { IUnitOfWork } from '../../src/@core/common/application/unit-of-work.interface';
 
 @Module({

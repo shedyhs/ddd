@@ -1,4 +1,4 @@
-import { DomainEventMediator } from '../domain/domain-event-manager';
+import { DomainEventMediator } from '../domain/domain-event-mediator';
 import { IUnitOfWork } from './unit-of-work.interface';
 
 export class ApplicationService {

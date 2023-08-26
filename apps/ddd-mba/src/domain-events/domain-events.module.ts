@@ -1,5 +1,5 @@
 import { Global, Module, OnModuleInit } from '@nestjs/common';
-import { DomainEventMediator } from '../../src/@core/common/domain/domain-event-manager';
+import { DomainEventMediator } from '../@core/common/domain/domain-event-mediator';
 import { IntegrationEventsPublisher } from './integration-events.publisher';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { StoredEventSchema } from '../@core/stored-events/infra/schemas';

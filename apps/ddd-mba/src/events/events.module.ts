@@ -35,7 +35,7 @@ import { EventSpotsController } from './events/event-spots.controller';
 import { OrderController } from './events/order.controller';
 import { ApplicationModule } from '../../src/application/application.module';
 import { ApplicationService } from '../../src/@core/common/application/application.service';
-import { DomainEventMediator } from '../../src/@core/common/domain/domain-event-manager';
+import { DomainEventMediator } from '../@core/common/domain/domain-event-mediator';
 import { PartnerCreated } from '../../src/@core/events/domain/domain-events/partner-created.event';
 import { ExampleHandler } from '../../src/@core/events/application/handlers/example.handler';
 import { ModuleRef } from '@nestjs/core';
@@ -96,9 +96,18 @@ import { PartnerCreatedIntegrationEvent } from '../@core/events/domain/integrati
       useFactory: (
         partnerRepository: IPartnerRepository,
         eventRepository: IEventRepository,
-        uow: IUnitOfWork,
-      ) => new EventService(partnerRepository, eventRepository, uow),
-      inject: ['IPartnerRepository', 'IEventRepository', 'IUnitOfWork'],
+        applicationService: ApplicationService,
+      ) =>
+        new EventService(
+          partnerRepository,
+          eventRepository,
+          applicationService,
+        ),
+      inject: [
+        'IPartnerRepository',
+        'IEventRepository',
+        ApplicationService,
+      ],
     },
     {
       provide: OrderService,
@@ -176,9 +185,12 @@ export class EventsModule implements OnModuleInit {
         },
       );
     });
-    this.domainEventMediator.registerForIntegration(PartnerCreated.name, async (event) => {
-      const integrationEvent = new PartnerCreatedIntegrationEvent(event);
-      await this.integrationEventsQueue.add(integrationEvent);
-    });
+    this.domainEventMediator.registerForIntegration(
+      PartnerCreated.name,
+      async (event) => {
+        const integrationEvent = new PartnerCreatedIntegrationEvent(event);
+        await this.integrationEventsQueue.add(integrationEvent);
+      },
+    );
   }
 }
