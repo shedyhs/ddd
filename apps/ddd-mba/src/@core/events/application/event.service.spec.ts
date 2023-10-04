@@ -19,6 +19,8 @@ import {
   EventSectionId,
 } from '../domain/entities/event-section.entity';
 import { EventSpot, EventSpotId } from '../domain/entities/event-spot.entity';
+import { ApplicationService } from '../../common/application/application.service';
+import { DomainEventMediator } from '../../common/domain/domain-event-mediator';
 describe('Event Service Test', () => {
   let orm: MikroORM;
   let entityManager: EntityManager;
@@ -26,6 +28,8 @@ describe('Event Service Test', () => {
   let partnerRepository: IPartnerRepository;
   let unitOfWork: IUnitOfWork;
   let eventService: EventService;
+  let domainEventMediator: DomainEventMediator;
+  let applicationService: ApplicationService;
   let partner: Partner;
 
   beforeAll(async () => {
@@ -51,12 +55,17 @@ describe('Event Service Test', () => {
     unitOfWork = new UnitOfWorkMikroOrm(entityManager);
     eventRepository = new EventMySqlRepository(entityManager);
     partnerRepository = new PartnerMySqlRepository(entityManager);
+    domainEventMediator = new DomainEventMediator();
+    applicationService = new ApplicationService(
+      unitOfWork,
+      domainEventMediator,
+    );
     entityManager.clear();
     await orm.schema.refreshDatabase();
     eventService = new EventService(
       partnerRepository,
       eventRepository,
-      unitOfWork,
+      applicationService,
     );
     partner = Partner.create({ name: 'Partner name' });
     await partnerRepository.add(partner);

@@ -6,12 +6,16 @@ import { Partner } from '../domain/entities/partner.entity';
 import { PartnerService } from './partner.service';
 import { IUnitOfWork } from '../../common/application/unit-of-work.interface';
 import { UnitOfWorkMikroOrm } from '../../common/infra/unit-of-work-mikro-orm';
+import { ApplicationService } from '../../common/application/application.service';
+import { DomainEventMediator } from '../../common/domain/domain-event-mediator';
 describe('Partner Service Test', () => {
   let orm: MikroORM;
   let entityManager: EntityManager;
   let partnerRepository: IPartnerRepository;
   let unitOfWork: IUnitOfWork;
   let partnerService: PartnerService;
+  let domainEventMediator: DomainEventMediator;
+  let applicationService: ApplicationService;
   beforeEach(async () => {
     orm = await MikroORM.init<MySqlDriver>({
       entities: [PartnerSchema],
@@ -26,9 +30,15 @@ describe('Partner Service Test', () => {
     entityManager = orm.em.fork();
     unitOfWork = new UnitOfWorkMikroOrm(entityManager);
     partnerRepository = new PartnerMySqlRepository(entityManager);
+    domainEventMediator = new DomainEventMediator();
+    applicationService = new ApplicationService(
+      unitOfWork,
+      domainEventMediator,
+    );
     entityManager.clear();
+
     await orm.schema.refreshDatabase();
-    partnerService = new PartnerService(partnerRepository, unitOfWork);
+    partnerService = new PartnerService(partnerRepository, applicationService);
   });
   afterEach(async () => {
     await orm.close();

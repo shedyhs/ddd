@@ -42,6 +42,7 @@ import { ModuleRef } from '@nestjs/core';
 import { BullModule, InjectQueue } from '@nestjs/bull';
 import { IIntegrationEvent } from '../@core/common/domain/integration-event';
 import { PartnerCreatedIntegrationEvent } from '../@core/events/domain/integration-events/partner-created.int-events';
+import { StoredEventSchema } from '../@core/stored-events/infra/schemas';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { PartnerCreatedIntegrationEvent } from '../@core/events/domain/integrati
       SpotReservationSchema,
       CustomerSchema,
       PartnerSchema,
+      StoredEventSchema,
     ]),
     ApplicationModule,
     BullModule.registerQueue({
